@@ -1,103 +1,99 @@
-# BIP39 比特币助记词和私钥生成器
+# BIP39 Bitcoin Private Key Generator
 
-这是一个安全的比特币助记词和私钥生成工具。它使用多重随机源来确保生成的私钥具有高度的随机性和安全性。
+A secure Bitcoin private key and mnemonic generator that uses multiple entropy sources to ensure high randomness and security.
 
-## 功能特点
+## Features
 
-- 生成12个单词的助记词（BIP39标准）
-- 生成对应的比特币私钥（多种格式）
-- 使用多重随机源提高安全性：
-  - 当前时间（精确到毫秒）
-  - CPU性能计数器
-  - 进程时间
-  - 系统随机数
-  - 10000个随机数
-  - 加密安全的随机字节
+- Generates 12-word mnemonic phrases (BIP39 standard)
+- Generates corresponding Bitcoin private keys (multiple formats)
+- Uses multiple entropy sources for enhanced security:
+  - Current time (millisecond precision)
+  - CPU performance counter
+  - Process time
+  - System random number
+  - 10,000 random numbers
+  - Cryptographically secure random bytes
 
-## 使用前准备
+## Prerequisites
 
-1. 确保您的电脑已安装Python（版本3.6或更高）
-   - 访问 [Python官网](https://www.python.org/downloads/) 下载并安装Python
+1. Python 3.6 or higher installed
+   - Download from [Python Official Website](https://www.python.org/downloads/)
 
-2. 下载程序文件
-   - generator.py（主程序）
-   - english.txt（助记词词库）
-   - 确保这两个文件在同一个文件夹中
+2. Required files
+   - generator.py (main program)
+   - english.txt (BIP39 wordlist)
+   - Ensure both files are in the same directory
 
-## 使用方法
+## Usage
 
-1. 打开命令提示符（Windows）或终端（Mac/Linux）
+1. Open Command Prompt (Windows) or Terminal (Mac/Linux)
 
-2. 进入程序所在文件夹
+2. Navigate to the program directory
    ```bash
-   cd 程序所在文件夹的路径
+   cd path/to/program/directory
    ```
 
-3. 运行程序
+3. Run the program
    ```bash
    python generator.py
    ```
 
-4. 程序会自动生成并显示：
-   - 生成时间
-   - 12个单词的助记词
-   - 种子（十六进制格式）
-   - 主私钥（十六进制格式）
-   - WIF格式私钥（可导入钱包）
+4. The program will generate and display:
+   - Generation timestamp
+   - 12-word mnemonic phrase
+   - Seed (hex format)
+   - Master private key (hex format)
+   - WIF format private key (wallet importable)
 
-## 输出说明
+## Sample Output
 
-程序运行后会显示如下信息： 
-
-BIP39助记词和私钥生成器
+BIP39 Mnemonic and Private Key Generator
 ------------------------
-使用时间生成: 2024-01-20 14:30:25.123456
-性能计数器: 12345.6789
-进程时间: 0.123456
-额外随机数长度: 10000
-生成的助记词:
+Generation time: 2024-01-20 14:30:25.123456
+Performance counter: 12345.6789
+Process time: 0.123456
+Extra random length: 10000
+
+Generated mnemonic:
 word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12
-生成的种子 (hex):
-1234...（64个字符的十六进制字符串）
-主私钥 (hex):
-5678...（64个字符的十六进制字符串）
-WIF格式私钥 (压缩格式):
-KxXX...（以K或L开头的字符串）
 
+Generated seed (hex):
+1234...(64 character hex string)
 
+Master private key (hex):
+5678...(64 character hex string)
 
+WIF format private key (compressed):
+KxXX...(starts with K or L)
 
+## Security Tips
 
+1. Keep your mnemonic phrase and private keys secure and never share them
+2. Run this program in an offline environment
+3. Clear the display after use
+4. Preferably use a new offline computer to generate keys
+5. Write down the mnemonic phrase on paper immediately and store it safely
 
+## Important Notes
 
+- This program generates real Bitcoin private keys - use with caution
+- Lost mnemonics or private keys cannot be recovered - backup safely
+- Test with small amounts first
+- Understand Bitcoin wallet usage before using for actual storage
 
+## FAQ
 
-## 安全提示
+Q: Why does it generate different mnemonics each time?  
+A: This is normal. The program uses multiple random sources to ensure each mnemonic is unique.
 
-1. 请妥善保管生成的助记词和私钥，不要分享给任何人
-2. 建议在离线环境下运行此程序
-3. 使用后及时清除显示器上的信息
-4. 最好使用全新的离线电脑生成私钥
-5. 生成后请立即将助记词抄写在纸上，并存放在安全的地方
+Q: Can I use the generated private key directly?  
+A: Yes, the WIF format private key can be imported into most Bitcoin wallets.
 
-## 重要说明
+Q: Does the program need internet connection?  
+A: No. This program can run completely offline.
 
-- 这个程序生成的是真实的比特币私钥，请谨慎使用
-- 丢失助记词或私钥将无法找回，请务必安全备份
-- 建议先用小额测试生成的地址是否正常工作
-- 如果要用于实际比特币存储，建议充分了解比特币钱包的使用方法
+## Disclaimer
 
-## 常见问题
+This program is for educational and research purposes only. Users assume all risks associated with using the generated private keys for any transactions. Make sure you fully understand the importance and proper usage of Bitcoin private keys.
 
-Q: 为什么每次运行都会生成不同的助记词？  
-A: 这是正常的。程序使用多个随机源来确保每次生成的助记词都是唯一的。
-
-Q: 生成的私钥可以直接使用吗？  
-A: 是的，生成的WIF格式私钥可以直接导入到大多数比特币钱包中。
-
-Q: 程序需要联网吗？  
-A: 不需要。这个程序可以在完全离线的环境下运行。
-
-## 免责声明
-
-本程序仅供学习和研究使用。使用本程序生成的私钥进行任何交易操作的风险由用户自行承担。请确保您完全理解比特币私钥的重要性和使用方法。
+[中文版说明](README_CN.md)
