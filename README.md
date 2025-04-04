@@ -1,6 +1,7 @@
 # BIP39 Bitcoin Private Key Generator
 
 A secure Bitcoin private key and mnemonic generator that uses multiple entropy sources to ensure high randomness and security.
+you can enter /dist to use the exe file
 
 ## Core Features
 
