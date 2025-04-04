@@ -1,99 +1,188 @@
-# BIP39 Bitcoin Private Key Generator
+# BIP39 比特币私钥生成器
 
-A secure Bitcoin private key and mnemonic generator that uses multiple entropy sources to ensure high randomness and security.
+一个安全的比特币私钥和助记词生成器，使用多种熵源确保高随机性和安全性。
 
-## Features
+## 核心功能
 
-- Generates 12-word mnemonic phrases (BIP39 standard)
-- Generates corresponding Bitcoin private keys (multiple formats)
-- Uses multiple entropy sources for enhanced security:
-  - Current time (millisecond precision)
-  - CPU performance counter
-  - Process time
-  - System random number
-  - 10,000 random numbers
-  - Cryptographically secure random bytes
+- 生成BIP39标准助记词短语（12或24个单词）
+- 创建多种格式的比特币私钥（十六进制、WIF格式）
+- 使用广泛的熵收集方法以获得最大安全性
+- 提供图形界面和命令行两种使用方式
+- 可以完全离线使用，适合冷存储解决方案
 
-## Prerequisites
+## 安全设计
 
-1. Python 3.6 or higher installed
-   - Download from [Python Official Website](https://www.python.org/downloads/)
+本生成器采用复杂的多层随机性方法：
 
-2. Required files
-   - generator.py (main program)
-   - english.txt (BIP39 wordlist)
-   - Ensure both files are in the same directory
+1. **基于系统时间的熵**
+   - 当前时间戳（毫秒精度）
+   - 性能计数器值
+   - 进程执行时间
 
-## Usage
+2. **基于硬件的熵**
+   - CPU使用模式
+   - 内存分配统计
+   - I/O操作时间
+   - 网络接口信息
+   - MAC地址
+   - 系统性能指标
 
-1. Open Command Prompt (Windows) or Terminal (Mac/Linux)
+3. **基于软件的熵**
+   - 密码学安全随机数生成器
+   - 多种哈希函数操作
+   - 线程竞争熵
+   - 进程ID和执行环境
+   - 文件系统元数据采样
 
-2. Navigate to the program directory
+4. **混合算法**
+   - 所有熵源通过XOR操作组合
+   - 应用最终SHA-256哈希创建助记词种子
+   - 遵循BIP39规范进行助记词创建和验证
+
+## 安装说明
+
+### 前提条件
+
+1. Python 3.6或更高版本
+   - 从[Python官网](https://www.python.org/downloads/)下载
+
+2. 所需依赖：
    ```bash
-   cd path/to/program/directory
+   pip install psutil tkinter
    ```
 
-3. Run the program
+3. 所需文件：
+   - generator.py（核心逻辑）
+   - gui.py（图形界面）
+   - english.txt（BIP39词表）
+
+### 可执行文件版本
+
+您可以直接运行程序的可执行文件版本：
+
+1. 从项目页面下载最新发布版本
+2. 无需安装 - 直接运行.exe文件
+3. 所有依赖已包含在可执行文件中
+
+## 使用说明
+
+### 图形界面方法（推荐大多数用户使用）
+
+1. 启动应用程序：
+   - 如果使用Python：`python gui.py`
+   - 如果使用可执行文件：双击.exe文件
+
+2. 选择助记词长度（12或24个单词）
+
+3. 点击"生成随机助记词"按钮
+
+4. 应用程序将显示：
+   - 助记词短语
+   - 种子（十六进制格式）
+   - 主私钥（十六进制格式）
+   - WIF格式私钥（可导入钱包）
+
+5. 复制并安全存储您的密钥
+
+### 命令行方法
+
+1. 打开命令提示符（Windows）或终端（Mac/Linux）
+
+2. 导航到程序目录
+   ```bash
+   cd 程序目录路径
+   ```
+
+3. 运行程序
    ```bash
    python generator.py
    ```
 
-4. The program will generate and display:
-   - Generation timestamp
-   - 12-word mnemonic phrase
-   - Seed (hex format)
-   - Master private key (hex format)
-   - WIF format private key (wallet importable)
+4. 按照屏幕上的说明进行操作：
+   - 生成完全随机的助记词，或者
+   - 创建部分自定义的助记词
 
-## Sample Output
+## 技术细节
 
-BIP39 Mnemonic and Private Key Generator
-------------------------
-Generation time: 2024-01-20 14:30:25.123456
-Performance counter: 12345.6789
-Process time: 0.123456
-Extra random length: 10000
+### BIP39实现
 
-Generated mnemonic:
-word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12
+生成器实现了比特币改进提案39（BIP39）标准来创建助记词句子：
 
-Generated seed (hex):
-1234...(64 character hex string)
+1. 生成安全熵（12个单词使用128位，24个单词使用256位）
+2. 通过取熵的SHA-256哈希的前（熵长度/32）位来计算校验和
+3. 将熵与校验和组合
+4. 将结果序列分割为11位组
+5. 将每个11位组映射到BIP39词表中的一个单词
+6. 使用PBKDF2-HMAC-SHA512算法和2048次迭代来派生助记词种子
+7. 使用BIP32派生方法生成主私钥
 
-Master private key (hex):
-5678...(64 character hex string)
+### 密钥格式
 
-WIF format private key (compressed):
-KxXX...(starts with K or L)
+生成器产生同一私钥的几种格式：
 
-## Security Tips
+- **原始熵**：用于创建助记词的初始随机性
+- **助记词**：编码熵的人类可读短语（12或24个单词）
+- **种子**：从助记词派生的扩展密钥材料（64字节）
+- **主私钥**：HD钱包结构的根密钥（32字节）
+- **WIF私钥**：钱包导入格式 - 广泛兼容的编码格式
 
-1. Keep your mnemonic phrase and private keys secure and never share them
-2. Run this program in an offline environment
-3. Clear the display after use
-4. Preferably use a new offline computer to generate keys
-5. Write down the mnemonic phrase on paper immediately and store it safely
+## 安全建议
 
-## Important Notes
+1. **离线生成**：为了最大安全性，在从未且永远不会连接互联网的隔离计算机上使用此程序
 
-- This program generates real Bitcoin private keys - use with caution
-- Lost mnemonics or private keys cannot be recovered - backup safely
-- Test with small amounts first
-- Understand Bitcoin wallet usage before using for actual storage
+2. **物理安全**：将您的助记词写在纸上并存放在保险箱等安全位置
 
-## FAQ
+3. **使用前测试**：始终先发送少量资金并验证您能否访问它，然后再存储大量资金
 
-Q: Why does it generate different mnemonics each time?  
-A: This is normal. The program uses multiple random sources to ensure each mnemonic is unique.
+4. **多地点备份**：考虑在多个安全物理位置存储助记词备份
 
-Q: Can I use the generated private key directly?  
-A: Yes, the WIF format private key can be imported into most Bitcoin wallets.
+5. **避免数字存储**：不要以数字形式存储助记词或私钥（不要截图、不要存为数字文档、不要通过电子邮件发送、不要存储在云端）
 
-Q: Does the program need internet connection?  
-A: No. This program can run completely offline.
+## 常见问题解答
 
-## Disclaimer
+**问：为什么生成器每次都创建不同的助记词？**  
+答：这是设计使然。程序使用多种随机源以确保每个助记词都是独特且不可预测的。
 
-This program is for educational and research purposes only. Users assume all risks associated with using the generated private keys for any transactions. Make sure you fully understand the importance and proper usage of Bitcoin private keys.
+**问：这与Ledger或Trezor等硬件钱包兼容吗？**  
+答：是的，生成的12/24个单词的助记词遵循BIP39标准，可以导入到大多数硬件钱包中。
 
-[中文版说明](README_CN.md)
+**问：使用这个比使用钱包生成的密钥有什么优势？**  
+答：此生成器使用多种熵源并可以完全离线运行，可能提供比某些钱包实现更好的随机性。
+
+**问：我可以使用部分自定义助记词吗？**  
+答：是的，程序支持在指定位置生成带有一些自定义单词的助记词。
+
+**问：随机性有多安全？**  
+答：程序将密码学安全随机数生成与来自多个源的系统熵相结合，使预测变得极其困难。
+
+## 原理说明
+
+本程序的核心原理是通过收集尽可能多的熵源来生成高质量的随机数，确保助记词和私钥的安全性：
+
+1. **熵收集**：
+   - 系统时间熵：收集高精度时间戳，捕捉毫秒级的不可预测性
+   - 性能计数器熵：利用CPU性能计数器的微小变化
+   - 硬件状态熵：采样CPU负载、内存使用、磁盘I/O等硬件状态
+   - 线程竞争熵：通过多线程竞争和时间测量收集微小的执行时间差异
+   - 文件系统熵：采样文件系统元数据的随机性
+
+2. **熵混合**：
+   - 使用XOR运算符将不同来源的熵比特进行混合
+   - 应用SHA-256哈希函数对混合后的熵进行处理
+   - 创建最终的熵比特流，用于生成助记词
+
+3. **助记词生成**：
+   - 按照BIP39标准将熵分成11位的块
+   - 为每块计算索引值并映射到BIP39词表中的单词
+   - 生成校验和并添加到熵中，确保助记词的正确性
+
+4. **私钥派生**：
+   - 使用PBKDF2函数从助记词派生种子
+   - 应用HMAC-SHA512从种子派生主私钥
+   - 转换为WIF格式以便导入到钱包
+
+## 免责声明
+
+本程序仅用于教育和研究目的。用户需承担与使用生成的私钥进行任何交易相关的所有风险。确保您充分理解比特币私钥的重要性和正确使用方法。
+
+[English Version](README.md)
